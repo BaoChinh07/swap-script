@@ -12,7 +12,7 @@ if [ -z "$SIZE_MB" ]; then
   exit 1
 fi
 
-# Kiểm tra tham số có phải là số không
+# Kiểm tra tham số có phải là số nguyên dương
 if ! [[ "$SIZE_MB" =~ ^[0-9]+$ ]]; then
   echo "❌ Dung lượng swap phải là một số nguyên (MB). Ví dụ: 2048"
   echo "👉 Ví dụ: bash <(curl -s $SCRIPT_URL) 2048"
@@ -21,16 +21,16 @@ fi
 
 echo "🛠️ Đang tạo swap file với dung lượng ${SIZE_MB}MB..."
 
-# Tạo file swap
+# Tạo swap
 fallocate -l "${SIZE_MB}M" /swapfile || dd if=/dev/zero of=/swapfile bs=1M count=$SIZE_MB
 chmod 600 /swapfile
 mkswap /swapfile
 swapon /swapfile
 
-# Ghi vào /etc/fstab để bật lại khi khởi động
+# Thêm vào fstab
 echo '/swapfile none swap sw 0 0' | tee -a /etc/fstab > /dev/null
 
-# Hiển thị thông tin swap
+# Hiển thị thông tin
 echo "✅ Swap đã được tạo:"
 swapon --show
 
