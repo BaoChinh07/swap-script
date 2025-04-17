@@ -20,9 +20,10 @@ if [[ "$1" == "--remove" || "$1" == "remove" ]]; then
   fi
 
   # Xoá dòng trong /etc/fstab nếu tồn tại
-  sed -i '/\/swapfile/d' /etc/fstab
-  echo "✅ Đã xoá dòng /swapfile khỏi /etc/fstab"
-  exit 0
+  if grep -q '/swapfile' /etc/fstab; then
+    sed -i '/\/swapfile/d' /etc/fstab
+    echo "✅ Đã xoá dòng /swapfile khỏi /etc/fstab"
+  fi
 fi
 
 # Nếu không phải là --remove thì kiểm tra tham số tạo swap
@@ -53,4 +54,3 @@ echo "$SWAP_FILE none swap sw 0 0" | tee -a /etc/fstab > /dev/null
 
 echo "✅ Swap đã được tạo:"
 swapon --show
-
